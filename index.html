@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Coding Bootcamp × 한화투자증권</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #080c10;
+      --surface:  #0d1117;
+      --card:     #111820;
+      --border:   #1e2a38;
+      --gold:     #f0b429;
+      --gold-dim: #b8882a;
+      --cyan:     #22d3ee;
+      --white:    #e8edf2;
+      --muted:    #6b7d8f;
+      --danger:   #ef4444;
+      --green:    #22c55e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(8,12,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+      color: var(--muted); text-decoration: none; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; color: var(--cyan);
+      background: rgba(34,211,238,0.08);
+      border: 1px solid rgba(34,211,238,0.25);
+      padding: 0.25rem 0.75rem; border-radius: 999px;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 2.5rem 4rem;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(240,180,41,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,180,41,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 70%);
+    }
+    .hero-glow {
+      position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+      width: 80vw; height: 60vh;
+      background: radial-gradient(ellipse, rgba(240,180,41,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--cyan);
+      background: rgba(34,211,238,0.06);
+      border: 1px solid rgba(34,211,238,0.2);
+      padding: 0.3rem 0.9rem; border-radius: 4px;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.7;
+      font-weight: 300;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+    .hero-stats {
+      display: flex; gap: 2.5rem; margin-top: 3rem;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+    .stat { display: flex; flex-direction: column; gap: 0.2rem; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem; color: var(--gold);
+      letter-spacing: 0.04em;
+    }
+    .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    .hero-cta {
+      display: flex; gap: 1rem; margin-top: 2.5rem;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.85rem; font-weight: 700;
+      text-decoration: none; border-radius: 6px;
+      transition: all 0.2s;
+      cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: var(--gold); color: #080c10;
+    }
+    .btn-primary:hover { background: #ffc940; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(240,180,41,0.35); }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    .ticker {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      display: flex; overflow: hidden;
+      border-top: 1px solid var(--border);
+      background: rgba(13,17,23,0.8);
+      padding: 0.6rem 0;
+    }
+    .ticker-track {
+      display: flex; gap: 3rem;
+      animation: ticker 30s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; color: var(--muted);
+      display: flex; gap: 0.5rem;
+    }
+    .ticker-item .up { color: var(--green); }
+    .ticker-item .down { color: var(--danger); }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px) }
+      to   { opacity:1; transform:translateY(0) }
+    }
+
+    /* ─── SECTION BASE ─── */
+    section { position: relative; z-index: 1; padding: 6rem 2.5rem; max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.2em;
+      color: var(--gold); text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .section-desc { font-size: 0.95rem; color: var(--muted); max-width: 600px; line-height: 1.8; }
+
+    /* ─── DIVIDER ─── */
+    .divider { width: 100%; height: 1px; background: var(--border); margin: 0 2.5rem; }
+
+    /* ─── WHY SECTION ─── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .why-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .why-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .why-card:hover { border-color: var(--gold-dim); transform: translateY(-4px); }
+    .why-card:hover::before { opacity: 1; }
+    .why-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .why-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .why-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+    /* ─── SCHEDULE ─── */
+    .schedule-wrap { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; }
+    .day-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .day-card:hover { border-color: rgba(240,180,41,0.4); }
+    .day-header {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.4rem 1.8rem;
+      cursor: pointer;
+    }
+    .day-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .day-info {}
+    .day-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .day-info p { font-size: 0.8rem; color: var(--muted); }
+    .day-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid;
+    }
+    .tag-cyan { color: var(--cyan); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.06); }
+    .tag-gold { color: var(--gold); border-color: rgba(240,180,41,0.3); background: rgba(240,180,41,0.06); }
+    .tag-green { color: var(--green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.06); }
+    .tag-red { color: var(--danger); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.06); }
+
+    .day-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 1.8rem;
+    }
+    .day-card.open .day-body { display: block; }
+    .day-card.open .day-header { background: rgba(240,180,41,0.03); }
+
+    .session-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .session {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }
+    .session-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; color: var(--gold);
+      margin-bottom: 0.4rem;
+    }
+    .session h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .session p { font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
+    .session ul { list-style: none; margin-top: 0.6rem; }
+    .session ul li {
+      font-size: 0.78rem; color: var(--muted); line-height: 1.8;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .session ul li::before { content: '▸'; position: absolute; left: 0; color: var(--gold); }
+
+    .day-project {
+      margin-top: 1rem;
+      background: rgba(240,180,41,0.04);
+      border: 1px solid rgba(240,180,41,0.2);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .day-project .icon { font-size: 1.4rem; flex-shrink: 0; }
+    .day-project h4 { font-size: 0.85rem; font-weight: 700; color: var(--gold); margin-bottom: 0.3rem; }
+    .day-project p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    .chevron {
+      width: 20px; height: 20px; color: var(--muted);
+      transition: transform 0.3s;
+    }
+    .day-card.open .chevron { transform: rotate(180deg); }
+
+    /* ─── TOOLS ─── */
+    .tools-section { background: none; }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    .tool-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.4rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      transition: all 0.2s;
+    }
+    .tool-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+    .tool-emoji { font-size: 1.8rem; }
+    .tool-name { font-size: 0.95rem; font-weight: 700; }
+    .tool-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+    .tool-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem; color: var(--cyan); margin-top: auto;
+    }
+
+    /* ─── COMPETITION ─── */
+    .comp-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+    @media(max-width:768px){.comp-layout{grid-template-columns:1fr}}
+    .comp-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .comp-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+    .criteria-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .criteria-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.7rem 0.9rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .criteria-name { font-size: 0.85rem; font-weight: 500; }
+    .criteria-score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; color: var(--gold);
+    }
+    .prize-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .prize-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .prize-item.first { background: rgba(240,180,41,0.06); border-color: rgba(240,180,41,0.3); }
+    .prize-item.second { background: rgba(168,168,168,0.04); border-color: rgba(168,168,168,0.2); }
+    .prize-item.third { background: rgba(180,120,60,0.04); border-color: rgba(180,120,60,0.2); }
+    .prize-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      min-width: 2rem;
+    }
+    .prize-item.first .prize-rank { color: var(--gold); }
+    .prize-item.second .prize-rank { color: #aaa; }
+    .prize-item.third .prize-rank { color: #c47840; }
+    .prize-info h4 { font-size: 0.9rem; font-weight: 700; }
+    .prize-info p { font-size: 0.78rem; color: var(--muted); }
+
+    /* ─── STACK ─── */
+    .stack-section { overflow: hidden; }
+    .tech-flow {
+      display: flex; gap: 1rem; margin-top: 2.5rem;
+      overflow-x: auto; padding-bottom: 1rem;
+    }
+    .tech-flow::-webkit-scrollbar { height: 3px; }
+    .tech-flow::-webkit-scrollbar-thumb { background: var(--border); }
+    .tech-node {
+      flex-shrink: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem 1.5rem;
+      text-align: center;
+      min-width: 130px;
+      transition: all 0.2s;
+    }
+    .tech-node:hover { border-color: var(--gold); transform: scale(1.05); }
+    .tech-node .tech-em { font-size: 2rem; display: block; margin-bottom: 0.4rem; }
+    .tech-node .tech-n { font-size: 0.82rem; font-weight: 700; }
+    .tech-node .tech-c { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+    .arrow {
+      display: flex; align-items: center; color: var(--gold); font-size: 1.2rem; flex-shrink: 0;
+    }
+
+    /* ─── TIMELINE / FOOTER ─── */
+    .timeline {
+      display: flex; flex-direction: column; gap: 0;
+      margin-top: 3rem;
+      border-left: 2px solid var(--border);
+      padding-left: 2rem;
+    }
+    .tl-item {
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute; left: -2.6rem; top: 0.2rem;
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border: 2px solid var(--bg);
+      border-radius: 50%;
+    }
+    .tl-day {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; color: var(--gold);
+      margin-bottom: 0.3rem;
+    }
+    .tl-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .tl-item p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; color: var(--gold); letter-spacing: 0.1em;
+    }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+
+    /* ─── PROGRESS BAR ─── */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--cyan));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ─── MOBILE ─── */
+    @media(max-width:640px){
+      nav { padding: 1rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 5rem; }
+      .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
+      section { padding: 4rem 1.5rem; }
+      .day-header { grid-template-columns: 60px 1fr; }
+      .day-tags { display: none; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    /* ─── REVEAL ─── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">VIBE CODING × 한화투자증권</div>
+  <ul class="nav-links">
+    <li><a href="#why">왜 바이브코딩?</a></li>
+    <li><a href="#schedule">5일 커리큘럼</a></li>
+    <li><a href="#tools">도구</a></li>
+    <li><a href="#competition">경연대회</a></li>
+    <li><a href="#stack">기술스택</a></li>
+  </ul>
+  <div class="nav-badge">2025 · 5-Day Bootcamp</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-eyebrow">2025 VIBE CODING BOOTCAMP · 한화투자증권</div>
+  <h1>AI와 함께<br /><span>코딩하는</span><br />미래 금융인</h1>
+  <p class="hero-sub">
+    프롬프트 한 줄로 서비스를 만드는 시대. 5일 동안 AI와 함께 실제 금융 서비스를
+    직접 만들고, 팀 경연대회에서 최고의 아이디어를 겨루세요.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">5</span>
+      <span class="stat-label">Days</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">20+</span>
+      <span class="stat-label">AI Tools</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">실습 중심</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">0원</span>
+      <span class="stat-label">무료 도구만</span>
+    </div>
+  </div>
+  <div class="hero-cta">
+    <a href="#schedule" class="btn btn-primary">▶ 커리큘럼 보기</a>
+    <a href="#competition" class="btn btn-outline">🏆 경연대회 안내</a>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track" id="ticker">
+      <span class="ticker-item">Claude Sonnet 4 <span class="up">▲ AI CODING</span></span>
+      <span class="ticker-item">GitHub Copilot <span class="up">▲ FREE PLAN</span></span>
+      <span class="ticker-item">Cursor IDE <span class="up">▲ TRENDING</span></span>
+      <span class="ticker-item">Windsurf <span class="up">▲ NEW</span></span>
+      <span class="ticker-item">Vercel Deploy <span class="up">▲ FREE</span></span>
+      <span class="ticker-item">한화투자증권 <span class="up">▲ INNOVATION</span></span>
+      <span class="ticker-item">Vibe Coding <span class="up">▲ 2025 TREND</span></span>
+      <span class="ticker-item">React + Tailwind <span class="up">▲ STACK</span></span>
+      <span class="ticker-item">Claude Sonnet 4 <span class="up">▲ AI CODING</span></span>
+      <span class="ticker-item">GitHub Copilot <span class="up">▲ FREE PLAN</span></span>
+      <span class="ticker-item">Cursor IDE <span class="up">▲ TRENDING</span></span>
+      <span class="ticker-item">Windsurf <span class="up">▲ NEW</span></span>
+      <span class="ticker-item">Vercel Deploy <span class="up">▲ FREE</span></span>
+      <span class="ticker-item">한화투자증권 <span class="up">▲ INNOVATION</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- WHY -->
+<section id="why">
+  <div class="section-label reveal">// WHY VIBE CODING</div>
+  <h2 class="section-title reveal">왜 지금 바이브코딩인가?</h2>
+  <p class="section-desc reveal">
+    2025년, 개발자와 비개발자의 경계가 사라지고 있습니다. AI 도구를 활용해
+    아이디어를 즉시 서비스로 만드는 능력이 금융 혁신의 핵심 역량이 됩니다.
+  </p>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-icon">🚀</div>
+      <h3>10배 빠른 개발</h3>
+      <p>AI 페어 프로그래밍으로 아이디어에서 동작하는 프로토타입까지 시간이 아닌 분 단위로 완성합니다.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">💡</div>
+      <h3>비개발자도 가능</h3>
+      <p>코딩 경험 없이도 자연어 프롬프트만으로 웹앱, 대시보드, 자동화 스크립트를 완성할 수 있습니다.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">💰</div>
+      <h3>100% 무료 도구</h3>
+      <p>Claude.ai, GitHub, Vercel, VS Code 모두 무료 플랜으로 실제 서비스 수준의 결과물을 만들 수 있습니다.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">📈</div>
+      <h3>금융 특화 적용</h3>
+      <p>리서치 자동화, 투자 대시보드, 리포트 생성, 데이터 시각화 등 업무에 즉시 적용 가능한 프로젝트를 제작합니다.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">🌐</div>
+      <h3>즉시 배포 & 공유</h3>
+      <p>GitHub Pages와 Vercel로 만든 서비스를 세계 어디서나 접근 가능한 URL로 즉시 공유할 수 있습니다.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">🤝</div>
+      <h3>팀 협업 역량</h3>
+      <p>Git 기반 협업과 AI 코드 리뷰로 팀 전체의 개발 생산성을 혁신적으로 높이는 방법을 배웁니다.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="section-label reveal">// 5-DAY CURRICULUM</div>
+  <h2 class="section-title reveal">5일 집중 커리큘럼</h2>
+  <p class="section-desc reveal">각 날마다 오전 이론 + 오후 실습으로 진행되며, 배운 내용을 즉시 프로젝트에 적용합니다.</p>
+
+  <div class="schedule-wrap">
+
+    <!-- DAY 1 -->
+    <div class="day-card reveal" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-num">01</div>
+        <div class="day-info">
+          <h3>🌅 바이브코딩 입문 & AI 환경 세팅</h3>
+          <p>Vibe Coding의 철학과 도구 설치, 첫 번째 AI 프로젝트 완성</p>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-cyan">Cursor</span>
+          <span class="tag tag-gold">Claude</span>
+          <span class="tag tag-green">GitHub</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="session-grid">
+          <div class="session">
+            <div class="session-time">09:00 – 10:30</div>
+            <h4>바이브코딩이란? 패러다임 전환</h4>
+            <p>Andrej Karpathy가 제시한 "Vibe Coding" 개념, AI 페어 프로그래밍의 의미, 개발자 역할의 변화</p>
+            <ul>
+              <li>전통적 코딩 vs. 바이브코딩 비교</li>
+              <li>2025 AI 개발 도구 생태계 지도</li>
+              <li>금융업에서의 활용 사례 (JP모건, Goldman, 미래에셋)</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">10:30 – 12:00</div>
+            <h4>개발환경 셋업 (0원으로)</h4>
+            <p>무료 도구 완전 정복 - 설치부터 첫 코드까지</p>
+            <ul>
+              <li>Cursor IDE 설치 & 기본 설정</li>
+              <li>Claude.ai 계정 생성 및 프로젝트 설정</li>
+              <li>GitHub 계정 & VS Code 연동</li>
+              <li>GitHub Pages 무료 배포 실습</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">13:00 – 15:30</div>
+            <h4>첫 번째 바이브코딩 실습</h4>
+            <p>프롬프트 작성법 기초, HTML/CSS/JS 웹페이지 즉시 생성</p>
+            <ul>
+              <li>효과적인 프롬프트 엔지니어링 패턴</li>
+              <li>"나의 투자 포트폴리오 현황판" 만들기</li>
+              <li>Claude와 대화하며 실시간 코드 수정</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">15:30 – 17:00</div>
+            <h4>GitHub 협업 기초</h4>
+            <p>버전 관리, 팀 협업, 코드 배포의 핵심</p>
+            <ul>
+              <li>Git 커밋·브랜치·PR 개념</li>
+              <li>GitHub Pages로 전세계에 공개 배포</li>
+              <li>팀 구성 & 경연대회 주제 선정 브레인스토밍</li>
+            </ul>
+          </div>
+        </div>
+        <div class="day-project">
+          <span class="icon">🎯</span>
+          <div>
+            <h4>Day 1 프로젝트: "Hello, FinTech!"</h4>
+            <p>나만의 투자 포트폴리오 현황 웹페이지 (HTML + CSS + JS)를 AI로 30분 안에 완성하고 GitHub Pages에 배포하기. 코딩 경험 없어도 OK!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-card reveal" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-num">02</div>
+        <div class="day-info">
+          <h3>🎨 프론트엔드 바이브코딩 - 금융 UI 제작</h3>
+          <p>React와 Tailwind로 프로다운 금융 대시보드 구축</p>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-cyan">React</span>
+          <span class="tag tag-gold">Tailwind</span>
+          <span class="tag tag-green">Recharts</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="session-grid">
+          <div class="session">
+            <div class="session-time">09:00 – 10:30</div>
+            <h4>React 핵심 개념 초고속 습득</h4>
+            <p>AI 도움으로 React를 이해하는 가장 빠른 방법</p>
+            <ul>
+              <li>컴포넌트, Props, State를 AI로 배우기</li>
+              <li>Vite로 React 앱 10초 셋업</li>
+              <li>Tailwind CSS 클래스 AI 자동완성 활용</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">10:30 – 12:00</div>
+            <h4>금융 UI 컴포넌트 라이브러리 제작</h4>
+            <p>실제 업무에서 쓸 수 있는 UI 컴포넌트 모음 만들기</p>
+            <ul>
+              <li>주가 차트 컴포넌트 (Recharts)</li>
+              <li>포트폴리오 수익률 카드</li>
+              <li>뉴스 피드 컴포넌트</li>
+              <li>시장 지수 실시간 표시 위젯</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">13:00 – 15:30</div>
+            <h4>인터랙티브 금융 대시보드 실습</h4>
+            <p>실제 금융 서비스 수준의 대시보드를 AI와 함께 완성</p>
+            <ul>
+              <li>자산 배분 파이 차트</li>
+              <li>수익률 히스토리 라인 차트</li>
+              <li>종목 검색 & 필터링 기능</li>
+              <li>다크/라이트 테마 토글</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">15:30 – 17:00</div>
+            <h4>AI 디버깅 & 코드 리뷰 실전</h4>
+            <p>AI를 사용한 효율적인 버그 수정과 코드 개선</p>
+            <ul>
+              <li>에러 메시지를 AI에게 붙여넣기</li>
+              <li>코드 품질 개선 프롬프트 패턴</li>
+              <li>반응형 디자인 자동 적용</li>
+            </ul>
+          </div>
+        </div>
+        <div class="day-project">
+          <span class="icon">📊</span>
+          <div>
+            <h4>Day 2 프로젝트: "Smart Dashboard"</h4>
+            <p>React + Tailwind + Recharts로 만드는 인터랙티브 포트폴리오 대시보드. 차트, 수익률 카드, 종목 검색이 모두 포함된 프로 수준의 금융 UI 완성!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-card reveal" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-num">03</div>
+        <div class="day-info">
+          <h3>⚡ API 연동 & 데이터 파워 활용</h3>
+          <p>실제 금융 데이터를 가져오고 Python으로 자동화하기</p>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-cyan">Python</span>
+          <span class="tag tag-gold">API</span>
+          <span class="tag tag-red">yfinance</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="session-grid">
+          <div class="session">
+            <div class="session-time">09:00 – 10:30</div>
+            <h4>Python 바이브코딩 입문</h4>
+            <p>파이썬을 전혀 몰라도 AI와 함께 금융 스크립트 완성</p>
+            <ul>
+              <li>Google Colab으로 0초 Python 환경</li>
+              <li>yfinance로 주가 데이터 수집</li>
+              <li>pandas 데이터 분석 AI 활용</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">10:30 – 12:00</div>
+            <h4>무료 금융 API 완전 정복</h4>
+            <p>돈 한 푼 안 쓰고 실시간 금융 데이터 사용하기</p>
+            <ul>
+              <li>Yahoo Finance API (무료 무제한)</li>
+              <li>한국투자증권 Open API (무료)</li>
+              <li>Alpha Vantage API 무료 티어</li>
+              <li>공공데이터포털 금융 데이터</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">13:00 – 15:30</div>
+            <h4>금융 자동화 스크립트 제작</h4>
+            <p>업무를 자동화하는 실용적인 스크립트 만들기</p>
+            <ul>
+              <li>매일 아침 시장 브리핑 자동 생성</li>
+              <li>관심 종목 알림 시스템</li>
+              <li>엑셀 리포트 자동 생성 (openpyxl)</li>
+              <li>Claude API로 AI 분석 리포트 생성</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">15:30 – 17:00</div>
+            <h4>Flask로 백엔드 API 만들기</h4>
+            <p>프론트엔드와 연결되는 백엔드 서버 구축</p>
+            <ul>
+              <li>Flask 10분 만에 API 서버 완성</li>
+              <li>CORS 설정 & JSON 응답</li>
+              <li>Railway.app 무료 서버 배포</li>
+            </ul>
+          </div>
+        </div>
+        <div class="day-project">
+          <span class="icon">🤖</span>
+          <div>
+            <h4>Day 3 프로젝트: "AI 리서치 어시스턴트"</h4>
+            <p>Claude API + yfinance로 특정 종목 입력 시 자동으로 재무 데이터 수집 → AI 분석 → 투자 의견 리포트를 생성하는 실제 업무 자동화 도구 완성!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-card reveal" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-num">04</div>
+        <div class="day-info">
+          <h3>🏗️ 풀스택 프로젝트 빌드 데이 (경연 준비)</h3>
+          <p>팀 프로젝트 집중 개발 + 멘토링 세션</p>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-cyan">Team</span>
+          <span class="tag tag-gold">Full-Stack</span>
+          <span class="tag tag-green">Mentoring</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="session-grid">
+          <div class="session">
+            <div class="session-time">09:00 – 10:00</div>
+            <h4>배포 & DevOps 바이브코딩</h4>
+            <p>완성된 서비스를 세상에 공개하는 모든 방법</p>
+            <ul>
+              <li>Vercel 자동 배포 (GitHub 연동)</li>
+              <li>GitHub Pages 커스텀 도메인</li>
+              <li>환경변수 & API 키 보안 관리</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">10:00 – 12:00</div>
+            <h4>최신 AI 도구 심화 실습</h4>
+            <p>2025년 가장 핫한 바이브코딩 도구 심화 활용</p>
+            <ul>
+              <li>Cursor Agent 모드 (자율 코딩)</li>
+              <li>Claude Projects 팀 협업 활용</li>
+              <li>v0.dev UI 자동 생성</li>
+              <li>Bolt.new 풀스택 앱 즉시 생성</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">13:00 – 16:00</div>
+            <h4>🔥 팀 프로젝트 집중 개발 (3시간)</h4>
+            <p>경연대회를 위한 팀 프로젝트 집중 제작 시간</p>
+            <ul>
+              <li>강사 & 멘토 1:1 코드 리뷰</li>
+              <li>AI 디버깅 & 기능 추가</li>
+              <li>UI/UX 개선 피드백</li>
+              <li>배포 & 최종 점검</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">16:00 – 17:00</div>
+            <h4>발표 준비 & 피칭 연습</h4>
+            <p>경연대회를 위한 5분 발표 준비</p>
+            <ul>
+              <li>서비스 데모 시나리오 작성</li>
+              <li>기술 스택 설명 방법</li>
+              <li>AI 활용 과정 스토리텔링</li>
+            </ul>
+          </div>
+        </div>
+        <div class="day-project">
+          <span class="icon">⚡</span>
+          <div>
+            <h4>Day 4 목표: "경연 프로젝트 80% 완성"</h4>
+            <p>팀이 선택한 주제의 풀스택 서비스를 80% 이상 완성하고 Vercel/GitHub Pages에 배포. 강사 멘토링으로 품질 완성도를 최대한 높이는 날.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-card reveal" onclick="toggleDay(this)">
+      <div class="day-header">
+        <div class="day-num">05</div>
+        <div class="day-info">
+          <h3>🏆 경연대회 & 시상식</h3>
+          <p>팀 프로젝트 최종 발표 + 심사 + 시상</p>
+        </div>
+        <div class="day-tags">
+          <span class="tag tag-red">Competition</span>
+          <span class="tag tag-gold">Award</span>
+          <span class="tag tag-cyan">Demo</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="session-grid">
+          <div class="session">
+            <div class="session-time">09:00 – 10:00</div>
+            <h4>최종 마무리 & 제출</h4>
+            <p>마지막 버그 수정 및 GitHub 최종 제출</p>
+            <ul>
+              <li>README.md 작성 (AI로 자동 생성)</li>
+              <li>데모 URL 최종 확인</li>
+              <li>발표 리허설</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">10:00 – 14:00</div>
+            <h4>🎤 팀별 발표 (5분 발표 + 3분 Q&A)</h4>
+            <p>각 팀의 서비스 시연 및 기술 설명</p>
+            <ul>
+              <li>문제 정의 & 솔루션 소개</li>
+              <li>라이브 데모 시연</li>
+              <li>AI 활용 방법 설명</li>
+              <li>기술 스택 & 아키텍처</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">14:00 – 15:00</div>
+            <h4>심사 & 네트워킹 점심</h4>
+            <p>심사위원 채점 + 참가자 간 자유 네트워킹</p>
+            <ul>
+              <li>5개 기준으로 심사 (각 20점)</li>
+              <li>프로젝트 아이디어 상호 피드백</li>
+              <li>다음 단계 개선 방향 논의</li>
+            </ul>
+          </div>
+          <div class="session">
+            <div class="session-time">15:00 – 17:00</div>
+            <h4>🏆 시상식 & 클로징 세션</h4>
+            <p>수상 발표 + 5일간의 여정 마무리</p>
+            <ul>
+              <li>수상팀 발표 & 시상</li>
+              <li>"바이브코딩 이후의 나" 다짐 공유</li>
+              <li>계속 성장하는 학습 로드맵 제공</li>
+              <li>단체 사진 & 수료증 수여</li>
+            </ul>
+          </div>
+        </div>
+        <div class="day-project">
+          <span class="icon">🥇</span>
+          <div>
+            <h4>최종 결과물: 실제로 작동하는 금융 서비스</h4>
+            <p>5일 간의 여정 끝에 GitHub에 올라가고 실제 URL로 접속 가능한, 나만의 금융 AI 서비스를 완성합니다. 모든 팀이 승자입니다!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end schedule-wrap -->
+</section>
+
+<div class="divider"></div>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="section-label reveal">// FREE TOOLS ONLY</div>
+  <h2 class="section-title reveal">무료로 쓰는 최강 도구들</h2>
+  <p class="section-desc reveal">모두 무료 플랜으로 실제 서비스를 만들 수 있습니다. 신용카드 필요 없음.</p>
+
+  <div class="tools-grid">
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🤖</span>
+      <div class="tool-name">Claude.ai</div>
+      <div class="tool-desc">Anthropic의 최강 AI 코딩 어시스턴트. 프로젝트 기능으로 긴 코드 컨텍스트 유지</div>
+      <div class="tool-type">AI / 무료플랜</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">⌨️</span>
+      <div class="tool-name">Cursor IDE</div>
+      <div class="tool-desc">AI 네이티브 코드 에디터. Tab 한 번으로 전체 함수 자동완성. 무료 플랜 충분</div>
+      <div class="tool-type">Editor / 무료플랜</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🌊</span>
+      <div class="tool-name">Windsurf</div>
+      <div class="tool-desc">Codeium의 새 AI 에디터. Cascade 에이전트가 파일 여러 개를 동시에 수정</div>
+      <div class="tool-type">Editor / 무료플랜</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🐙</span>
+      <div class="tool-name">GitHub</div>
+      <div class="tool-desc">코드 버전 관리 + GitHub Pages 무료 배포 + Copilot 무료 기본 제공</div>
+      <div class="tool-type">DevOps / 무료</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">▲</span>
+      <div class="tool-name">Vercel</div>
+      <div class="tool-desc">GitHub 연동 자동 배포. 무료 플랜으로 무제한 프로젝트, HTTPS 자동 적용</div>
+      <div class="tool-type">Deploy / 무료플랜</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">⚡</span>
+      <div class="tool-name">v0.dev</div>
+      <div class="tool-desc">Vercel의 UI 생성 도구. 텍스트 설명만으로 React + Tailwind 컴포넌트 즉시 생성</div>
+      <div class="tool-type">UI Gen / 무료플랜</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🔩</span>
+      <div class="tool-name">Bolt.new</div>
+      <div class="tool-desc">풀스택 앱을 브라우저에서 즉시 생성. 백엔드+프론트엔드 동시에 완성</div>
+      <div class="tool-type">Full-Stack / 무료플랜</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🐍</span>
+      <div class="tool-name">Google Colab</div>
+      <div class="tool-desc">설치 없이 브라우저에서 Python 실행. GPU도 무료. 금융 데이터 분석 완벽</div>
+      <div class="tool-type">Python / 무료</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">📈</span>
+      <div class="tool-name">yfinance</div>
+      <div class="tool-desc">Yahoo Finance 주가 데이터 무료 Python 라이브러리. KOSPI, KOSDAQ 포함</div>
+      <div class="tool-type">Data / 무료</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🎨</span>
+      <div class="tool-name">Tailwind CSS</div>
+      <div class="tool-desc">클래스 이름만으로 디자인 완성. AI와 함께 쓰면 10배 빠른 UI 개발</div>
+      <div class="tool-type">CSS / 오픈소스</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🚂</span>
+      <div class="tool-name">Railway.app</div>
+      <div class="tool-desc">백엔드 서버 무료 배포. Python Flask, Node.js 서버를 5분만에 인터넷에 공개</div>
+      <div class="tool-type">Backend / 무료플랜</div>
+    </div>
+    <div class="tool-card reveal">
+      <span class="tool-emoji">🔑</span>
+      <div class="tool-name">Anthropic API</div>
+      <div class="tool-desc">Claude를 내 서비스에 직접 연동. $5 무료 크레딧으로 수백 번의 API 호출 가능</div>
+      <div class="tool-type">API / 무료크레딧</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPETITION -->
+<section id="competition">
+  <div class="section-label reveal">// HACKATHON</div>
+  <h2 class="section-title reveal">경연대회 안내</h2>
+  <p class="section-desc reveal">5일간 배운 모든 기술을 집약해 팀 프로젝트를 완성하고 최고의 금융 AI 서비스를 겨룹니다.</p>
+
+  <div class="comp-layout">
+    <div class="comp-card reveal">
+      <h3>심사 기준 (총 100점)</h3>
+      <ul class="criteria-list">
+        <li class="criteria-item">
+          <span class="criteria-name">🚀 혁신성 & 아이디어</span>
+          <span class="criteria-score">20</span>
+        </li>
+        <li class="criteria-item">
+          <span class="criteria-name">💻 기술 구현 완성도</span>
+          <span class="criteria-score">25</span>
+        </li>
+        <li class="criteria-item">
+          <span class="criteria-name">🤖 AI 도구 활용도</span>
+          <span class="criteria-score">20</span>
+        </li>
+        <li class="criteria-item">
+          <span class="criteria-name">📊 금융업 실용성</span>
+          <span class="criteria-score">20</span>
+        </li>
+        <li class="criteria-item">
+          <span class="criteria-name">🎤 발표 & 데모 퀄리티</span>
+          <span class="criteria-score">15</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="comp-card reveal">
+      <h3>추천 프로젝트 주제</h3>
+      <ul class="criteria-list">
+        <li class="criteria-item"><span class="criteria-name">📰 AI 금융 뉴스 큐레이터 + 요약</span></li>
+        <li class="criteria-item"><span class="criteria-name">📊 개인 투자 포트폴리오 분석기</span></li>
+        <li class="criteria-item"><span class="criteria-name">🤖 종목 AI 리서치 자동화 도구</span></li>
+        <li class="criteria-item"><span class="criteria-name">📈 실시간 시장 모니터링 대시보드</span></li>
+        <li class="criteria-item"><span class="criteria-name">💬 고객 FAQ AI 챗봇 (금융 특화)</span></li>
+        <li class="criteria-item"><span class="criteria-name">📋 투자 리포트 자동 생성 서비스</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="comp-layout" style="margin-top:1.5rem">
+    <div class="comp-card reveal">
+      <h3>팀 구성 & 규칙</h3>
+      <ul class="criteria-list">
+        <li class="criteria-item"><span class="criteria-name">👥 팀 규모</span><span class="criteria-score" style="font-size:1rem;color:var(--cyan)">3–4명</span></li>
+        <li class="criteria-item"><span class="criteria-name">⏰ 개발 기간</span><span class="criteria-score" style="font-size:1rem;color:var(--cyan)">Day 3–5</span></li>
+        <li class="criteria-item"><span class="criteria-name">💰 예산 제한</span><span class="criteria-score" style="font-size:1rem;color:var(--green)">무료 도구만</span></li>
+        <li class="criteria-item"><span class="criteria-name">📦 제출 방식</span><span class="criteria-score" style="font-size:1rem;color:var(--cyan)">GitHub</span></li>
+        <li class="criteria-item"><span class="criteria-name">🌐 배포 필수</span><span class="criteria-score" style="font-size:1rem;color:var(--gold)">라이브 URL</span></li>
+      </ul>
+    </div>
+    <div class="comp-card reveal">
+      <h3>🏆 시상</h3>
+      <ul class="prize-list">
+        <li class="prize-item first">
+          <span class="prize-rank">1ST</span>
+          <div class="prize-info">
+            <h4>대상 (최우수상)</h4>
+            <p>트로피 + 수료증 + 사내 혁신 사례 등재</p>
+          </div>
+        </li>
+        <li class="prize-item second">
+          <span class="prize-rank">2ND</span>
+          <div class="prize-info">
+            <h4>최우수상</h4>
+            <p>트로피 + 수료증</p>
+          </div>
+        </li>
+        <li class="prize-item third">
+          <span class="prize-rank">3RD</span>
+          <div class="prize-info">
+            <h4>우수상</h4>
+            <p>수료증 + 팀 발표 기회</p>
+          </div>
+        </li>
+        <li class="prize-item" style="background:rgba(34,211,238,0.04);border-color:rgba(34,211,238,0.2)">
+          <span class="prize-rank" style="color:var(--cyan)">✨</span>
+          <div class="prize-info">
+            <h4>특별상 (아이디어상, AI활용상 등)</h4>
+            <p>심사위원 선정 특별 부문 시상</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="section-label reveal">// TECH STACK</div>
+  <h2 class="section-title reveal">5일간 배우는 기술 스택</h2>
+  <p class="section-desc reveal">처음부터 끝까지 AI와 함께 만드는 풀스택 흐름입니다.</p>
+
+  <div class="tech-flow reveal">
+    <div class="tech-node">
+      <span class="tech-em">💬</span>
+      <div class="tech-n">Prompt</div>
+      <div class="tech-c">아이디어 & 명세</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="tech-node">
+      <span class="tech-em">🤖</span>
+      <div class="tech-n">Claude / Cursor</div>
+      <div class="tech-c">AI 코드 생성</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="tech-node">
+      <span class="tech-em">⚛️</span>
+      <div class="tech-n">React + Vite</div>
+      <div class="tech-c">프론트엔드</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="tech-node">
+      <span class="tech-em">🐍</span>
+      <div class="tech-n">Python / Flask</div>
+      <div class="tech-c">백엔드 & API</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="tech-node">
+      <span class="tech-em">📊</span>
+      <div class="tech-n">yfinance / API</div>
+      <div class="tech-c">금융 데이터</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="tech-node">
+      <span class="tech-em">🐙</span>
+      <div class="tech-n">GitHub</div>
+      <div class="tech-c">버전관리 & 협업</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="tech-node">
+      <span class="tech-em">▲</span>
+      <div class="tech-n">Vercel</div>
+      <div class="tech-c">배포 & 라이브</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div style="margin-top:4rem">
+    <div class="section-label reveal">// LEARNING JOURNEY</div>
+    <h3 class="reveal" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:0.5rem;letter-spacing:0.03em">5일간의 여정</h3>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-day">DAY 01</div>
+        <h3>0 → 첫 배포</h3>
+        <p>코딩을 전혀 몰랐던 사람이 첫 웹페이지를 만들어 GitHub Pages에 공개합니다. 바이브코딩의 마법을 처음 경험하는 날.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-day">DAY 02</div>
+        <h3>프로 수준의 UI</h3>
+        <p>React와 Tailwind로 실제 금융 앱 수준의 인터랙티브 대시보드를 완성합니다. AI가 코드의 90%를 써줍니다.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-day">DAY 03</div>
+        <h3>데이터가 살아있는 서비스</h3>
+        <p>실제 주가 데이터를 가져오고 Claude AI로 분석 리포트를 자동 생성하는 진짜 업무 자동화 도구를 만듭니다.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-day">DAY 04</div>
+        <h3>팀과 함께 풀스택 완성</h3>
+        <p>경연대회를 위한 팀 프로젝트를 집중 개발합니다. 강사 멘토링과 함께 완성도를 극한까지 끌어올립니다.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-day">DAY 05</div>
+        <h3>🏆 내가 만든 서비스 발표</h3>
+        <p>5일 전만 해도 코딩을 몰랐던 내가, 실제로 작동하는 AI 금융 서비스를 발표하는 감동의 마지막 날.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">VIBE CODING BOOTCAMP × 한화투자증권</div>
+    <p style="margin-top:0.4rem">5일간 AI와 함께 미래 금융을 코딩합니다 · 2025</p>
+  </div>
+  <div style="text-align:right">
+    <p>Made with AI · 100% Free Tools</p>
+    <p style="margin-top:0.3rem">
+      <a href="https://github.com" style="color:var(--gold);text-decoration:none;font-size:0.8rem">GitHub Repository →</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  // ── PROGRESS BAR
+  window.addEventListener('scroll', () => {
+    const el = document.getElementById('progress');
+    const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    el.style.width = (scrolled * 100) + '%';
+  });
+
+  // ── TOGGLE DAY CARD
+  function toggleDay(card) {
+    const isOpen = card.classList.contains('open');
+    document.querySelectorAll('.day-card').forEach(c => c.classList.remove('open'));
+    if (!isOpen) card.classList.add('open');
+  }
+
+  // ── REVEAL ON SCROLL
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── OPEN FIRST DAY BY DEFAULT
+  document.querySelector('.day-card').classList.add('open');
+</script>
+</body>
+</html>
